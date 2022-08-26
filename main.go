@@ -13,7 +13,7 @@ import (
 func setupRoutes(app *fiber.App) {
 	app.Get("/", handler.Test)
 	app.Post("/register", handler.Register)
-	app.Post("/auth-register", handler.RegisterAuth)
+	app.Post("/verify-otp", handler.VerifyOTP)
 	app.Post("/login", handler.Login)
 	app.Post("/resend-otp", handler.ResendOTP)
 }

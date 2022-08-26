@@ -90,7 +90,7 @@ func Register(c *fiber.Ctx) error {
 	})
 }
 
-func RegisterAuth(c *fiber.Ctx) error {
+func VerifyOTP(c *fiber.Ctx) error {
 	// Parse Token
 	tokenString := c.Get("Authorization")
 	tokenString = strings.Fields(tokenString)[1]
@@ -143,7 +143,7 @@ func RegisterAuth(c *fiber.Ctx) error {
 	config.Database.Where("id = ? AND status = 0", userWaId.Issuer).Updates(&userWaStruct)
 	return c.Status(200).JSON(fiber.Map{
 		"code":    "200",
-		"message": "Auth success",
+		"message": "Verify OTP success",
 	})
 }
 
@@ -229,6 +229,11 @@ func ResendOTP(c *fiber.Ctx) error {
 			"message": "Can't find user",
 		})
 	}
+
+	// Expire previous OTP(s)
+	otpLogStruct := new(entity.OtpLog)
+	otpLogStruct.Status = "1"
+	config.Database.Where("user_wa_id = ? AND status = 0", userWaId.Issuer).Updates(&otpLogStruct)
 
 	// Create OTP
 	var OTP string

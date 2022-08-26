@@ -2,7 +2,6 @@ package handler
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"os"
 
@@ -76,9 +75,9 @@ func sendMessage(phoneNumber, OTP string) (check string, err error) {
 		return "", err
 	}
 	if response[0].IsIn == false {
-		return "", errors.New("Phone number is not registered on WhatsApp")
+		return sendSMS(phoneNumber, OTP)
 	}
-	message := "Ini adalah kode OTP: " + OTP + "Jangan beri tau siapapun!"
+	message := "Ini adalah kode OTP: " + OTP + "\nJangan beri tau siapapun!"
 	_, err = wac.SendMessage(context.Background(), types.JID{
 		User:   phoneNumber[1:],
 		Server: types.DefaultUserServer,

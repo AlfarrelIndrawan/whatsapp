@@ -60,7 +60,7 @@ func Register(c *fiber.Ctx) error {
 	// Create OTP
 	var OTP string
 	rand.NewSource(time.Now().UnixNano())
-	for i := 0; i < 4; i++ {
+	for i := 0; i < 6; i++ {
 		OTP += strconv.Itoa(rand.Intn(10))
 	}
 	OtpLog := new(entity.OtpLog)
@@ -233,7 +233,7 @@ func ResendOTP(c *fiber.Ctx) error {
 	// Create OTP
 	var OTP string
 	rand.NewSource(time.Now().UnixNano())
-	for i := 0; i < 4; i++ {
+	for i := 0; i < 6; i++ {
 		OTP += strconv.Itoa(rand.Intn(10))
 	}
 	OtpLog := new(entity.OtpLog)

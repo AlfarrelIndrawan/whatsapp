@@ -34,6 +34,7 @@ func Register(c *fiber.Ctx) error {
 	userWa.Name = data["name"]
 	password, err := bcrypt.GenerateFromPassword([]byte(data["password"]), bcrypt.DefaultCost)
 	userWa.Password = password
+	userWa.PhoneCode = data["phoneCode"]
 	userWa.PhoneNumber = data["phoneNumber"]
 	userWa.Status = "0"
 
@@ -73,7 +74,8 @@ func Register(c *fiber.Ctx) error {
 	}
 
 	// Send message
-	response, err := sendMessage(data["phoneNumber"], OTP)
+	fullPhoneNumber := data["phoneCode"] + data["phoneNumber"]
+	response, err := sendMessage(fullPhoneNumber, OTP)
 	if err != nil {
 		return c.Status(404).JSON(fiber.Map{
 			"code":    "404",
@@ -155,7 +157,7 @@ func Login(c *fiber.Ctx) error {
 	// Check User
 	var userWa entity.UserWa
 
-	config.Database.Where("phone_number = ?", data["phoneNumber"]).First(&userWa)
+	config.Database.Where("phone_code = ? AND phone_number = ?", data["phoneCode"], data["phoneNumber"]).First(&userWa)
 
 	if userWa.ID == 0 {
 		c.Status(fiber.StatusNotFound)
@@ -245,7 +247,8 @@ func ResendOTP(c *fiber.Ctx) error {
 	}
 
 	// Send Message
-	response, err := sendMessage(userWaStruct.PhoneNumber, OTP)
+	fullPhoneNumber := userWaStruct.PhoneCode + userWaStruct.PhoneNumber
+	response, err := sendMessage(fullPhoneNumber, OTP)
 	if err != nil {
 		return c.Status(404).JSON(fiber.Map{
 			"code":    "404",

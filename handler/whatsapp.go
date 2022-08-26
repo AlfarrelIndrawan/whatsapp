@@ -68,10 +68,10 @@ func sendMessage(phoneNumber, OTP string) (check string, err error) {
 		return "", err
 	}
 
-	var phoneNumberInternational []string
-	phoneNumberInternational = append(phoneNumberInternational, "+"+phoneNumber)
+	var fullPhoneNumber []string
+	fullPhoneNumber = append(fullPhoneNumber, phoneNumber)
 
-	response, err := wac.IsOnWhatsApp(phoneNumberInternational)
+	response, err := wac.IsOnWhatsApp(fullPhoneNumber)
 	if err != nil {
 		return "", err
 	}
@@ -80,7 +80,7 @@ func sendMessage(phoneNumber, OTP string) (check string, err error) {
 	}
 	message := "Ini adalah kode OTP: " + OTP + "Jangan beri tau siapapun!"
 	_, err = wac.SendMessage(context.Background(), types.JID{
-		User:   phoneNumber,
+		User:   phoneNumber[1:],
 		Server: types.DefaultUserServer,
 	}, "", &waProto.Message{
 		Conversation: proto.String(message),

@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"errors"
 	"fmt"
 	"math/rand"
 	"strconv"
@@ -25,6 +26,9 @@ func Register(c *fiber.Ctx) error {
 
 	if err := c.BodyParser(&data); err != nil {
 		return err
+	}
+	if len(data["phoneNumber"]) < 5 || len(data["phoneNumber"]) > 13 {
+		return errors.New("Phone number format is not valid")
 	}
 
 	// Create User
